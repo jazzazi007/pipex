@@ -15,6 +15,7 @@ int main()
 	printf("This is printed in example.txt!\n");
     printf("this is another test\n");
     write(1, "hi", 2);
+	printf("done?");
 
 	return (0);
 }
