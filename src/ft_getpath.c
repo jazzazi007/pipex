@@ -1,8 +1,5 @@
-#include <stdio.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
+#include "../include/pipex.h"
+
 
 char *ft_getenv(char **env)
 {
@@ -21,9 +18,4 @@ char *ft_getenv(char **env)
     }
   }
   return (NULL);
-}
-int main(int ac, char **av, char **env)
-{
-  char *path = ft_getenv(env);
-  return (0);
 }

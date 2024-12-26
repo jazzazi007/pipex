@@ -1,34 +1,38 @@
-void exec_cmd(char *cmd, char **envi, int file)
-{
+#include "../include/pipex.h"
 
-}
 void pipex(int infile, int outfile, char **ag, char **env)
 {
     int id;
     int pd[2];
 
     if (pipe(pd) == -1)
+    {
+        perror("Error creating pipe");
         return;
+    }
     id = fork();
     if (id < 0)
+    {
+        perror("Error creating fork");
         return;
-    if (id == 0)
+    }
+    if (id == 0) // child
     {
         close (pd[0]);
-        dup2(infile, 0);
+        dup2(infile, STDIN_FILENO);
         close(infile);
-        dup2(pd[1], 1);
+        dup2(pd[1], STDOUT_FILENO);
         close(pd[1]);
-        exec_cmd(cmd, env, infile);
+        cmd_exec(ft_getenv(env), ag, env);
     }
-    else 
+    else //parent
     {
         close(pd[1]);
-        dup2(outfile, 1);
+        dup2(outfile, STDOUT_FILENO);
         close(outfile);
-        dup2(pd[0], 0);
+        dup2(pd[0], STDIN_FILENO);
         close(pd[0]);
-        exec_cmd(cmd2, env, outfile);
+        cmd_exec(ft_getenv(env), ag, env);
     }
 
 }
@@ -40,10 +44,24 @@ int main(int ac, char **av, char **envp)
     if (ac == 5)
     {
         fd1 = open(av[1], O_RDONLY);
-        fd2 = open(av[4], O_RDWR | O_CREAT| O_TRUNC | 0644);
-        if(fd1 < 0 || fd2 < 0)
-            return(-1);
+        fd2 = open(av[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        if (fd1 < 0)
+        {
+            perror("Error opening input file");
+            return (-1);
+        }
+        if (fd2 < 0)
+        {
+            perror("Error opening output file");
+            close(fd1);
+            return (-1);
+        }
         pipex(fd1, fd2, av, envp);
+    }
+    else
+    {
+        perror("Error: invalid number of args");
+        return (-1);
     }
     return(0);
 }

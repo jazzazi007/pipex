@@ -1,3 +1,0 @@
-start of the fileThis is printed in example.txt!
-this is another test
-hi
