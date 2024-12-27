@@ -1,4 +1,9 @@
-#include "../include/pipex.h"
+#include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include "libft.h"
 
 char *get_cmd_path(char *cmd, char **env)
 {
@@ -32,16 +37,36 @@ char *get_cmd_path(char *cmd, char **env)
     free(path_copy);
     return (NULL);
 }
-void cmd_exec(char *path, char *agv, char **envp)
+
+int main(int ac, char **av, char **env)
 {
-    char **cmd = ft_split(agv, ' ');
+    if (ac < 2)
+    {
+        printf("Usage: %s <command>\n", av[0]);
+        return (1);
+    }
+
+    char **argv = ft_split(av[1], ' ');
+    if (!argv)
+    {
+        perror("ft_split failed");
+        return (1);
+    }
+
     char *cmd_path = get_cmd_path(argv[0], env);
     if (!cmd_path)
     {
         perror("Command not found");
         return (1);
     }
-    if (execve(cmd_path, cmd, envp) == -1)
-        perror("Error EXECVE");
-    return;
+
+    if (execve(cmd_path, argv, env) == -1)
+    {
+        free(cmd_path);
+        perror("execve failed");
+        exit(EXIT_FAILURE);
+    }
+
+    free(cmd_path);
+    return (0);
 }

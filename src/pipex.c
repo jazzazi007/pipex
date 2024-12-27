@@ -23,7 +23,7 @@ void pipex(int infile, int outfile, char **ag, char **env)
         close(infile);
         dup2(pd[1], STDOUT_FILENO);
         close(pd[1]);
-        cmd_exec(ft_getenv(env), ag, env);
+        cmd_exec(ft_getenv(env), ag[2], env);
     }
     else //parent
     {
@@ -32,7 +32,7 @@ void pipex(int infile, int outfile, char **ag, char **env)
         close(outfile);
         dup2(pd[0], STDIN_FILENO);
         close(pd[0]);
-        cmd_exec(ft_getenv(env), ag, env);
+        cmd_exec(ft_getenv(env), ag[3], env);
     }
 
 }
@@ -44,7 +44,7 @@ int main(int ac, char **av, char **envp)
     if (ac == 5)
     {
         fd1 = open(av[1], O_RDONLY);
-        fd2 = open(av[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        fd2 = open(av[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
         if (fd1 < 0)
         {
             perror("Error opening input file");
