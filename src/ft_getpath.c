@@ -8,7 +8,7 @@ char *ft_getenv(char **env)
 
   while(env[i])
   {
-    if (strncmp(env[i], "PWD=", get)==0)
+    if (ft_strncmp(env[i], "PWD=", get)==0)
     {
       printf("%s\n", env[i]);
       return (env[i]);

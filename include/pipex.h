@@ -6,6 +6,7 @@
 # include <stdio.h>
 # include <string.h>
 # include <stdlib.h>
+#include "../libft/libft.h"
 
 //don't forget to do libft
 //don't forget to do ft_printf
