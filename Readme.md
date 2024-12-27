@@ -16,7 +16,7 @@ Pipex is a project that simulates the behavior of the shell pipeline. It takes t
 ## Installation
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/pipex.git
+    git clone https://github.com/jazzazi007/pipex.git
     ```
 2. Navigate to the project directory:
     ```sh
