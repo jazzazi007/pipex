@@ -30,4 +30,4 @@ Pipex is a project that simulates the behavior of the shell pipeline. It takes t
 ## Usage
 To run the program, use the following command:
 ```sh
-./pipex file1 cmd1 cmd2 file2
+./pipex.out file1 cmd1 cmd2 file2
