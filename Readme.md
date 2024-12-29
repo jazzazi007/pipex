@@ -1,17 +1,17 @@
-# Pipex
+# 🚀 Pipex
 
 ## Introduction
 Pipex is a project that simulates the behavior of the shell pipeline. It takes two commands and executes them in sequence, passing the output of the first command as the input to the second command.
 
 ## Features
-- Executes two commands in sequence
-- Handles input and output redirection
-- Simulates shell pipeline behavior
+- 🛠️ Executes two commands in sequence
+- 📥 Handles input and output redirection
+- 🌀 Simulates shell pipeline behavior
 
 ## Requirements
-- GCC compiler
-- Make utility
-- Libft library
+- 🖥️ GCC compiler
+- 🛠️ Make utility
+- 📚 Libft library
 
 ## Installation
 1. Clone the repository:
