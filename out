@@ -1,9 +1,13 @@
+.
+..
 a.out
 file1
 file2
+.git
 include
 libft
 Makefile
+out
 outfile
 pipex.out
 Readme.md

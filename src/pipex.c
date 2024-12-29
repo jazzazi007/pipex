@@ -62,8 +62,13 @@ int main(int ac, char **av, char **envp)
     }
     else
     {
-        perror("Error: invalid number of args");
+        write(1,"Error: invalid number of args\n", 31);
         return (-1);
     }
     return(0);
 }
+/*
+we need to do another fork 
+enhance the acesss fucntion to be related to infile or outfile and excutability of the command 
+complete the memory allocation handling
+there are leaksssssssssssssssssssssssssssssssssssssssssssssss*/
