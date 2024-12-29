@@ -2,7 +2,7 @@
 
 void pipex(int infile, int outfile, char **ag, char **env)
 {
-    int id;
+    pid_t id;
     int pd[2];
 
     if (pipe(pd) == -1)
@@ -13,7 +13,7 @@ void pipex(int infile, int outfile, char **ag, char **env)
     id = fork();
     if (id < 0)
     {
-        perror("Error creating fork");
+        perror("creating fork");
         return;
     }
     if (id == 0) // child
@@ -23,7 +23,7 @@ void pipex(int infile, int outfile, char **ag, char **env)
         close(infile);
         dup2(pd[1], STDOUT_FILENO);
         close(pd[1]);
-        cmd_exec(ft_getenv(env), ag[2], env);
+        cmd_exec(ag[2], env);
     }
     else //parent
     {
@@ -32,7 +32,9 @@ void pipex(int infile, int outfile, char **ag, char **env)
         close(outfile);
         dup2(pd[0], STDIN_FILENO);
         close(pd[0]);
-        cmd_exec(ft_getenv(env), ag[3], env);
+        cmd_exec(ag[3], env);
+        waitpid(id, NULL, 0);
+        //cmd_exec(ft_getenv(env), ag[3], env);
     }
 
 }

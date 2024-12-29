@@ -2,7 +2,7 @@
 
 char *get_cmd_path(char *cmd, char **env)
 {
-    char *path = NULL;
+   // char *path = NULL;
     char *path_copy;
     char *dir;
     char *full_path;
@@ -32,14 +32,14 @@ char *get_cmd_path(char *cmd, char **env)
     free(path_copy);
     return (NULL);
 }
-void cmd_exec(char *path, char *agv, char **envp)
+void cmd_exec(char *agv, char **envp)
 {
     char **cmd = ft_split(agv, ' ');
-    char *cmd_path = get_cmd_path(argv[0], env);
+    char *cmd_path = get_cmd_path(agv, envp);
     if (!cmd_path)
     {
         perror("Command not found");
-        return (1);
+        return;
     }
     if (execve(cmd_path, cmd, envp) == -1)
         perror("Error EXECVE");
