@@ -35,9 +35,6 @@ char *get_cmd_path(char *cmd, char **env)
 void cmd_exec(char *agv, char **envp)
 {
     char **cmd = ft_split(agv, ' ');
-    printf("cmd[0]: %s\n", cmd[0]);
-    printf("cmd[1]: %s\n", cmd[1]);
-    printf("cmd[2]: %s\n", cmd[2]);
     if (!cmd)
     {
         perror("CMD at start: Command not found");
@@ -51,5 +48,6 @@ void cmd_exec(char *agv, char **envp)
     }
     if (execve(cmd_path, cmd, envp) == -1)
         perror("Error EXECVE");
+    free(cmd_path);
     return;
 }

@@ -3,6 +3,7 @@
 void pipex(int infile, int outfile, char **ag, char **env)
 {
     pid_t id;
+    pid_t id2;
     int pd[2];
 
     if (pipe(pd) == -1)
@@ -13,7 +14,7 @@ void pipex(int infile, int outfile, char **ag, char **env)
     id = fork();
     if (id < 0)
     {
-        perror("creating fork");
+        perror("creating fork 1");
         return;
     }
     if (id == 0) // child
@@ -24,19 +25,32 @@ void pipex(int infile, int outfile, char **ag, char **env)
         dup2(pd[1], STDOUT_FILENO);
         close(pd[1]);
         cmd_exec(ag[2], env);
+        exit(0);
     }
     else //parent
     {
-        close(pd[1]);
-        dup2(outfile, STDOUT_FILENO);
-        close(outfile);
-        dup2(pd[0], STDIN_FILENO);
+        id2 = fork();
+        if (id2 < 0)
+        {
+            perror("creating fork 2");
+            return;
+        }
+        if (id2 ==0)
+        {
+            close(pd[1]);
+            dup2(outfile, STDOUT_FILENO);
+            close(outfile);
+            dup2(pd[0], STDIN_FILENO);
+            close(pd[0]);
+            cmd_exec(ag[3], env);
+            exit(0);
+        }
         close(pd[0]);
-        cmd_exec(ag[3], env);
+        close(pd[1]);
         waitpid(id, NULL, 0);
+        waitpid(id2, NULL, 0);
         //cmd_exec(ft_getenv(env), ag[3], env);
     }
-
 }
 
 int main(int ac, char **av, char **envp)
@@ -68,7 +82,6 @@ int main(int ac, char **av, char **envp)
     return(0);
 }
 /*
-we need to do another fork 
 enhance the acesss fucntion to be related to infile or outfile and excutability of the command 
-complete the memory allocation handling
-there are leaksssssssssssssssssssssssssssssssssssssssssssssss*/
+complete the memory allocation handling: Done but double check
+*/
