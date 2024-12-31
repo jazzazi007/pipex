@@ -49,7 +49,6 @@ void pipex(int infile, int outfile, char **ag, char **env)
         close(pd[1]);
         waitpid(id, NULL, 0);
         waitpid(id2, NULL, 0);
-        //cmd_exec(ft_getenv(env), ag[3], env);
     }
 }
 
@@ -59,6 +58,12 @@ int main(int ac, char **av, char **envp)
     int fd2;
     if (ac == 5)
     {
+        fd1 = access(av[1], F_OK & R_OK & W_OK & X_OK);
+        if (fd1 < 0)
+        {
+            perror("Error accessing input file");
+            return (-1);
+        }
         fd1 = open(av[1], O_RDONLY);
         fd2 = open(av[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
         if (fd1 < 0)
