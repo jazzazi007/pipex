@@ -1,11 +1,15 @@
-total 52
--rw-r--r-- 1 mohammad mohammad   644 Dec 31 20:12 Makefile
--rw-r--r-- 1 mohammad mohammad   815 Dec 31 20:18 Readme.md
--rw-r--r-- 1 mohammad mohammad    10 Dec 31 20:12 file1
--rwxr-xr-x 1 mohammad mohammad     0 Dec 31 21:26 file2
-drwxr-xr-x 2 mohammad mohammad  4096 Dec 31 20:12 include
-drwxr-xr-x 2 mohammad mohammad  4096 Dec 31 21:18 libft
--rwxr-xr-x 1 mohammad mohammad    87 Dec 31 20:12 out
--rw-r--r-- 1 mohammad mohammad    25 Dec 31 20:12 outfile
--rwxr-xr-x 1 mohammad mohammad 17568 Dec 31 21:24 pipex.out
-drwxr-xr-x 2 mohammad mohammad  4096 Dec 31 21:24 src
+.
+..
+file000
+file1
+file2
+.git
+include
+libft
+Makefile
+out
+outfile
+pipex.out
+Readme.md
+src
+test.c
