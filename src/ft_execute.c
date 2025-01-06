@@ -48,6 +48,12 @@ char	*get_cmd_path(char *cmd, char **env)
 	while (dir)
 	{
 		full_path = malloc(ft_strlen(dir) + ft_strlen(cmd) + 2);
+		if (!full_path)
+			return (NULL);
+		//modify this to use cpy and cat functions
+		strcpy(full_path, dir);
+		strcat(full_path, "/");
+		strcat(full_path, cmd);
 		if (access(full_path, X_OK) == 0)
 		{
 			free(path_copy);
@@ -79,19 +85,25 @@ void	cmd_exec(char *agv, char **envp)
 	char	*cmd_path;
 
 	cmd = ft_split(agv, ' ');
+	cmd_path = NULL;
 	if (!cmd)
 	{
 		perror("CMD at start: Command not found");
 		return ;
 	}
-	cmd_path = get_cmd_path(cmd[0], envp);
+	if (access(cmd[0], X_OK) == 0)
+		cmd_path = ft_strdup(cmd[0]);
+	else
+	{
+		cmd_path = get_cmd_path(cmd[0], envp);
 	if (!cmd_path)
 	{
 		perror("CMD: Command not found");
 		free(cmd_path);
 		free_split(cmd);
 		return ;
-	}
+	}}
+	
 	if (execve(cmd_path, cmd, envp) == -1)
 		perror("Error EXECVE");
 	free(cmd_path);
