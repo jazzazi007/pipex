@@ -1,0 +1,5 @@
+moaljazz@c2r4s1 ~/pipex % valgrind --track-fds=yes --leak-check=full -s ./pipex.out file1 "" " " out   
+
+moaljazz@c2r4s1 ~/pipex % valgrind --track-fds=yes --leak-check=full -s ./pipex.out file1 "" " " out   
+
+moaljazz@c2r4s1 ~/pipex % valgrind --track-fds=yes --leak-check=full -s ./pipex.out file1 "mkdir sss" ls out
