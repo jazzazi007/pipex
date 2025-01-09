@@ -62,10 +62,12 @@ void	pipex(int infile, int outfile, char **ag, char **env)
 		return ;
 	if (id == 0)
 	{
-		if (file_errhandle(infile) != 13)
+		if (file_errhandle(infile) == 0)
 			first_fork_operate(infile, ag, env, pd);
 		else
-			exit(0);
+			{
+				exit(127);
+			}
 	}
 	else
 	{
@@ -74,10 +76,12 @@ void	pipex(int infile, int outfile, char **ag, char **env)
 			return ;
 		if (id2 == 0)
 		{
-			if (file_errhandle(outfile) != 13)
+			if (file_errhandle(outfile) == 0)
 				second_fork_operate(outfile, ag, env, pd);
 			else
-				exit(0);
+			{
+				exit(1);
+			}
 		}
 		close_pipes(pd, id, id2);
 	}
@@ -110,12 +114,12 @@ int	main(int ac, char **av, char **envp)
 
 	if (ac == 5)
 	{
-		fd1 = access(av[1], F_OK & R_OK & W_OK & X_OK);
+		/*fd1 = access(av[1], F_OK & R_OK & W_OK & X_OK);
 		if (fd1 < 0)
 		{
 			perror("Error accessing input file");
 			//return (-1);
-		}
+		}*/
 		fd1 = open(av[1], O_RDONLY);
 
 		fd2 = open(av[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);

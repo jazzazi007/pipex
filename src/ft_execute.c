@@ -23,12 +23,22 @@ int	check_fork(pid_t id)
 	return (0);
 }
 
-void	close_pipes(int *pd, pid_t id, pid_t id2)
+void close_pipes(int *pd, pid_t id, pid_t id2)
 {
-	close(pd[0]);
-	close(pd[1]);
-	waitpid(id, NULL, 0);
-	waitpid(id2, NULL, 0);
+    close(pd[0]);
+    close(pd[1]);
+
+    int status;
+    waitpid(id, NULL, 0);
+    waitpid(id2, &status, 0);
+    if (WIFEXITED(status))
+    {
+        printf("Second child exited with status %d\n", WEXITSTATUS(status));
+    }
+    else if (WIFSIGNALED(status))
+    {
+        printf("Second child terminated by signal %d\n", 128 + WTERMSIG(status));
+    }
 }
 
 char	*get_cmd_path(char *cmd, char **env)
@@ -86,9 +96,10 @@ void	cmd_exec(char *agv, char **envp)
 
 	cmd = ft_split(agv, ' ');
 	cmd_path = NULL;
-	if (!cmd)
+	if (!cmd || !cmd[0])
 	{
 		perror("CMD at start: Command not found");
+		free_split(cmd);
 		return ;
 	}
 	if (access(cmd[0], X_OK) == 0)
@@ -99,8 +110,10 @@ void	cmd_exec(char *agv, char **envp)
 	if (!cmd_path)
 	{
 		perror("CMD: Command not found");
+		fprintf(stderr, "Error: %s %d\n", strerror(errno), errno);
 		free(cmd_path);
 		free_split(cmd);
+		exit(127);
 		return ;
 	}}
 	
