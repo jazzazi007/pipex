@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
-#include <stdio.h>
 
 int	check_fork(pid_t id)
 {
@@ -23,22 +22,19 @@ int	check_fork(pid_t id)
 	return (0);
 }
 
-void close_pipes(int *pd, pid_t id, pid_t id2)
+int close_pipes(int *pd, pid_t id, pid_t id2)
 {
+	int status;
+	
     close(pd[0]);
     close(pd[1]);
-
-    int status;
     waitpid(id, NULL, 0);
     waitpid(id2, &status, 0);
     if (WIFEXITED(status))
-    {
-        printf("Second child exited with status %d\n", WEXITSTATUS(status));
-    }
+		return(WEXITSTATUS(status));
     else if (WIFSIGNALED(status))
-    {
-        printf("Second child terminated by signal %d\n", 128 + WTERMSIG(status));
-    }
+		return(128 + WTERMSIG(status));
+	return (0);
 }
 
 char	*get_cmd_path(char *cmd, char **env)
@@ -54,23 +50,22 @@ char	*get_cmd_path(char *cmd, char **env)
 	if (!env[i])
 		return (NULL);
 	path_copy = ft_strdup(env[i] + 5);
-	dir = strtok(path_copy, ":");
+	dir = ft_strtok(path_copy, ':');
 	while (dir)
 	{
 		full_path = malloc(ft_strlen(dir) + ft_strlen(cmd) + 2);
 		if (!full_path)
 			return (NULL);
-		//modify this to use cpy and cat functions
-		strcpy(full_path, dir);
-		strcat(full_path, "/");
-		strcat(full_path, cmd);
+		ft_strcpy(full_path, dir);
+		ft_strcat(full_path, "/");
+		ft_strcat(full_path, cmd);
 		if (access(full_path, X_OK) == 0)
 		{
 			free(path_copy);
 			return (full_path);
 		}
 		free(full_path);
-		dir = strtok(NULL, ":");
+		dir = ft_strtok(NULL, ':');
 	}
 	free(path_copy);
 	return (NULL);
@@ -89,7 +84,7 @@ void	free_split(char **cmd)
 	free(cmd);
 }
 
-void	cmd_exec(char *agv, char **envp)
+int	cmd_exec(char *agv, char **envp)
 {
 	char	**cmd;
 	char	*cmd_path;
@@ -98,9 +93,8 @@ void	cmd_exec(char *agv, char **envp)
 	cmd_path = NULL;
 	if (!cmd || !cmd[0])
 	{
-		perror("CMD at start: Command not found");
 		free_split(cmd);
-		return ;
+		return (0);
 	}
 	if (access(cmd[0], X_OK) == 0)
 		cmd_path = ft_strdup(cmd[0]);
@@ -109,17 +103,20 @@ void	cmd_exec(char *agv, char **envp)
 		cmd_path = get_cmd_path(cmd[0], envp);
 	if (!cmd_path)
 	{
-		perror("CMD: Command not found");
-		fprintf(stderr, "Error: %s %d\n", strerror(errno), errno);
+		write(2, cmd[0], ft_strlen(cmd[0]));
+		write(2, ": command not found\n", 20);
 		free(cmd_path);
 		free_split(cmd);
-		exit(127);
-		return ;
+		return(127);
 	}}
 	
 	if (execve(cmd_path, cmd, envp) == -1)
-		perror("Error EXECVE");
+	{
+		errno = ENOKEY;
+		perror("Error");
+		return (126);
+	}
 	free(cmd_path);
 	free_split(cmd);
-	return ;
+	return(0);
 }

@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 SRC_DIR = src
 INC_DIR = include
-SRCS = $(SRC_DIR)/pipex.c $(SRC_DIR)/ft_execute.c $(SRC_DIR)/ft_getpath.c
+SRCS = $(SRC_DIR)/pipex.c $(SRC_DIR)/ft_execute.c $(SRC_DIR)/ft_utils.c
 
 OBJS = $(SRCS:.c=.o)
 
