@@ -34,7 +34,6 @@ int	close_pipes(int *pd, pid_t id, pid_t id2)
 		return (WEXITSTATUS(status));
 	else if (WIFSIGNALED(status))
 		return (128 + WTERMSIG(status));
-
 	return (0);
 }
 
@@ -56,20 +55,9 @@ char	*get_cmd_path(char *cmd, char **env)
 	dir = ft_strtok(path_copy, ":");
 	while (dir)
 	{
-		full_path = malloc(ft_strlen(dir) + ft_strlen(cmd) + 2);
-		if (!full_path || !dir)
-		{	
-			free(path_copy);
-			return (NULL);
-		}
-		ft_strcpy(full_path, dir);
-		ft_strcat(full_path, "/");
-		ft_strcat(full_path, cmd);
+		full_path = get_cmd_assist(cmd, dir);
 		if (access(full_path, X_OK) == 0)
-		{
-			free(path_copy);
-			return (full_path);
-		}
+			return (free(path_copy), full_path);
 		free(full_path);
 		dir = ft_strtok(NULL, ":");
 	}
@@ -93,14 +81,12 @@ void	free_split(char **cmd)
 int	cmd_exec(char *agv, char **envp)
 {
 	char	**cmd;
-	char	*cmd_path = NULL;
+	char	*cmd_path;
 
+	cmd_path = NULL;
 	cmd = ft_split(agv, ' ');
 	if (!cmd || !cmd[0])
-	{
-		free_split(cmd);
-		return (0);
-	}
+		return (free_split(cmd), 0);
 	if (access(cmd[0], X_OK) == 0)
 		cmd_path = ft_strdup(cmd[0]);
 	else
@@ -110,20 +96,13 @@ int	cmd_exec(char *agv, char **envp)
 		{
 			write(2, cmd[0], ft_strlen(cmd[0]));
 			write(2, ": command not found\n", 20);
-			free(cmd_path);
-			free_split(cmd);
-			return (127);
+			return (free(cmd_path), free_split(cmd), 127);
 		}
 	}
 	if (execve(cmd_path, cmd, envp) == -1)
 	{
 		free(cmd_path);
-		free_split(cmd);
-		errno = ENOKEY;
-		perror("Error");
-		return (126);
+		return (free_split(cmd), errno = ENOKEY, perror("Error"), 126);
 	}
-	free(cmd_path);
-	free_split(cmd);
-	return (0);
+	return (free(cmd_path), free_split(cmd), 0);
 }

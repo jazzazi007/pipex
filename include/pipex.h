@@ -35,5 +35,7 @@ int		check_fork(pid_t id);
 void	first_fork_operate(int infile, char **ag, char **env, int *pd);
 void	second_fork_operate(int outfile, char **ag, char **env, int *pd);
 int		file_errhandle(int file);
-
+char	*get_cmd_assist(char *cmd, char *dir);
+void	fork1(int infile, char **ag, char **env, int *pd);
+void	fork2(int outfile, char **ag, char **env, int *pd);
 #endif

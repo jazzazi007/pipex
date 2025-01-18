@@ -54,7 +54,6 @@ char	*ft_strtok(char *str, const char *delim)
 	char		*token;
 	static char	*static_str;
 
-	static_str = NULL;
 	if (str)
 		static_str = str;
 	if (!static_str)

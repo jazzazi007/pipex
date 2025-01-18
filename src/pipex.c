@@ -51,22 +51,14 @@ void	pipex(int infile, int outfile, char **ag, char **env)
 	int		pd[2];
 
 	if (pipe(pd) == -1)
-	{
-		perror("Error");
 		return ;
-	}
 	id = fork();
 	if (check_fork(id) < 0)
 		return ;
 	if (id == 0)
 	{
 		close(outfile);
-		if (file_errhandle(infile) == 0)
-		{
-			first_fork_operate(infile, ag, env, pd);
-		}
-		else
-			exit(1);
+		fork1(infile, ag, env, pd);
 	}
 	else
 	{
@@ -75,19 +67,10 @@ void	pipex(int infile, int outfile, char **ag, char **env)
 		if (check_fork(id2) < 0)
 			return ;
 		if (id2 == 0)
-		{
-			if (file_errhandle(outfile) == 0)
-			{
-				second_fork_operate(outfile, ag, env, pd);
-			}
-			else
-				exit(1);
-		}
+			fork2(outfile, ag, env, pd);
 		close(outfile);
 		exit(close_pipes(pd, id, id2));
 	}
-	
-
 }
 
 int	main(int ac, char **av, char **envp)
@@ -103,11 +86,6 @@ int	main(int ac, char **av, char **envp)
 		{
 			close(fd1);
 		}
-		if (fd1 < 0)
-		{
-			close(fd2);
-		}
-
 		pipex(fd1, fd2, av, envp);
 		close(fd1);
 		close(fd2);
