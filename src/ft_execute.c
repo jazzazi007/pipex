@@ -53,11 +53,11 @@ char	*get_cmd_path(char *cmd, char **env)
 	path_copy = ft_strdup(env[i] + 5);
 	if (!path_copy)
 		return (NULL);
-	dir = ft_strtok(path_copy, ':');
+	dir = ft_strtok(path_copy, ":");
 	while (dir)
 	{
 		full_path = malloc(ft_strlen(dir) + ft_strlen(cmd) + 2);
-		if (!full_path)
+		if (!full_path || !dir)
 		{	
 			free(path_copy);
 			return (NULL);
@@ -71,7 +71,7 @@ char	*get_cmd_path(char *cmd, char **env)
 			return (full_path);
 		}
 		free(full_path);
-		dir = ft_strtok(NULL, ':');
+		dir = ft_strtok(NULL, ":");
 	}
 	free(path_copy);
 	return (NULL);
@@ -108,8 +108,6 @@ int	cmd_exec(char *agv, char **envp)
 		cmd_path = get_cmd_path(cmd[0], envp);
 		if (!cmd_path)
 		{
-			fprintf(stderr, "cmd[0]: %s\n", cmd[0]);
-			fprintf(stderr, "cmd_path: %s\n", cmd_path);
 			write(2, cmd[0], ft_strlen(cmd[0]));
 			write(2, ": command not found\n", 20);
 			free(cmd_path);

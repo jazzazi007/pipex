@@ -11,45 +11,66 @@
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <stdio.h>
 
-
-char	*ft_strtok(char *str, char sepa)
+size_t	ft_strspn(const char *s1, const char *s2)
 {
-	static char	*stock = NULL;
-	char		*ptr;
-	int		i;
+	size_t	count;
+
+	count = 0;
+	while (*s1)
+	{
+		if (ft_strchr(s2, *s1))
+			count++;
+		else
+			break ;
+		s1++;
+	}
+	return (count);
+}
+
+char	*ft_strpbrk(const char *s1, const char *s2)
+{
+	int	i;
 
 	i = 0;
-	ptr = NULL;
-	if (str != NULL)
+	if (!s1 || !s2)
+		return (0);
+	while (*s1)
 	{
-		if (stock != NULL)
-			free(stock); // Free previously allocated memory
-		stock = ft_strdup(str);
-		if (stock == NULL)
-        {
-            fprintf(stderr, "Memory allocation failed\n");
-			return (NULL); // Return NULL if memory allocation fails
-        }
+		i = 0;
+		while (s2[i])
+		{
+			if (*s1 == s2[i])
+				return ((char *)s1);
+			i++;
+		}
+		s1++;
 	}
+	return (NULL);
+}
 
-	while (*stock != '\0')
+char	*ft_strtok(char *str, const char *delim)
+{
+	char		*token;
+	static char	*static_str;
+
+	static_str = NULL;
+	if (str)
+		static_str = str;
+	if (!static_str)
+		return (NULL);
+	static_str += ft_strspn(static_str, delim);
+	if (*static_str == '\0')
 	{
-		if (i == 0 && *stock != sepa)
-		{
-			i = 1;
-			ptr = stock;
-		}
-		else if (i == 1 && *stock == sepa)
-		{
-			*stock = '\0';
-			stock += 1;
-			break ;
-		}
-		stock++;
+		static_str = NULL;
+		return (NULL);
 	}
-    fprintf(stderr, "stock: %s\n", stock);
-    fprintf(stderr, "ptr: %s\n", ptr);
-	return (ptr);
+	token = static_str;
+	static_str = ft_strpbrk(static_str, delim);
+	if (static_str)
+	{
+		*static_str = '\0';
+		static_str++;
+	}
+	return (token);
 }
