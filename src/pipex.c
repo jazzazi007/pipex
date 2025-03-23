@@ -57,19 +57,18 @@ void	pipex(int infile, int outfile, char **ag, char **env)
 		return ;
 	if (id == 0)
 	{
-		close(outfile);
+		file_close(outfile);
 		fork1(infile, ag, env, pd);
 	}
 	else
 	{
-		close(infile);
+		file_close(infile);
 		id2 = fork();
 		if (check_fork(id2) < 0)
 			return ;
 		if (id2 == 0)
 			fork2(outfile, ag, env, pd);
-		close(outfile);
-		exit(close_pipes(pd, id, id2));
+		exit(close_pipes(outfile, pd, id, id2));
 	}
 }
 
@@ -82,13 +81,11 @@ int	main(int ac, char **av, char **envp)
 	{
 		fd1 = open(av[1], O_RDONLY);
 		fd2 = open(av[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
-		if (fd2 < 0)
-		{
-			close(fd1);
-		}
 		pipex(fd1, fd2, av, envp);
-		close(fd1);
-		close(fd2);
+		if (fd1 >= 0)
+			close(fd1);
+		if (fd2 >= 0)
+			close(fd2);
 	}
 	else
 	{

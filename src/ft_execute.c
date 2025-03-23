@@ -22,10 +22,12 @@ int	check_fork(pid_t id)
 	return (0);
 }
 
-int	close_pipes(int *pd, pid_t id, pid_t id2)
+int	close_pipes(int outfile, int *pd, pid_t id, pid_t id2)
 {
 	int	status;
 
+	if (outfile >= 0)
+		close(outfile);
 	close(pd[0]);
 	close(pd[1]);
 	waitpid(id, NULL, 0);
@@ -56,13 +58,14 @@ char	*get_cmd_path(char *cmd, char **env)
 	while (dir)
 	{
 		full_path = get_cmd_assist(cmd, dir);
+		if (!full_path)
+			return (null_ret(path_copy));
 		if (access(full_path, X_OK) == 0)
-			return (free(path_copy), full_path);
+			return (path_ret(full_path, path_copy));
 		free(full_path);
 		dir = ft_strtok(NULL, ":");
 	}
-	free(path_copy);
-	return (NULL);
+	return (null_ret(path_copy));
 }
 
 void	free_split(char **cmd)
@@ -70,6 +73,8 @@ void	free_split(char **cmd)
 	int	i;
 
 	i = 0;
+	if (!cmd)
+		return ;
 	while (cmd[i])
 	{
 		free(cmd[i]);
@@ -82,27 +87,26 @@ int	cmd_exec(char *agv, char **envp)
 {
 	char	**cmd;
 	char	*cmd_path;
+	char	*bash_command;
 
 	cmd_path = NULL;
-	cmd = ft_split(agv, ' ');
+	bash_command = bash_cmd(agv);
+	cmd = ft_split(bash_command, ' ');
+	free(bash_command);
 	if (!cmd || !cmd[0])
-		return (free_split(cmd), 0);
+	{
+		free_split(cmd);
+		return (0);
+	}
 	if (access(cmd[0], X_OK) == 0)
 		cmd_path = ft_strdup(cmd[0]);
 	else
 	{
 		cmd_path = get_cmd_path(cmd[0], envp);
 		if (!cmd_path)
-		{
-			write(2, cmd[0], ft_strlen(cmd[0]));
-			write(2, ": command not found\n", 20);
-			return (free(cmd_path), free_split(cmd), 127);
-		}
+			return (handle_ret(cmd_path, cmd, 127));
 	}
 	if (execve(cmd_path, cmd, envp) == -1)
-	{
-		free(cmd_path);
-		return (free_split(cmd), errno = ENOKEY, perror("Error"), 126);
-	}
-	return (free(cmd_path), free_split(cmd), 0);
+		return (exceve_ret(cmd_path, cmd, 126));
+	return (handle_ret_num(cmd_path, cmd, 0));
 }

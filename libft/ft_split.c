@@ -53,12 +53,20 @@ static int	num(char const *s, char c, int word_len)
 	return (word_len);
 }
 
+static char	**ret_null(char **lst)
+{
+	free_all(lst);
+	return (NULL);
+}
+
 char	**ft_split(char const *s, char c)
 {
 	char	**lst;
 	int		word_len;
 	int		i;
 
+	if (!s)
+		return (0);
 	lst = (char **)malloc((countword(s, c) + 1) * sizeof(char *));
 	if (!s || !lst)
 		return (0);
@@ -71,10 +79,7 @@ char	**ft_split(char const *s, char c)
 		{
 			lst[i] = ft_substr(s, 0, word_len = num(s, c, word_len));
 			if (!(lst[i++]))
-			{
-				free_all(lst);
-				return (NULL);
-			}
+				return (ret_null(lst));
 			s += word_len;
 		}
 	}
